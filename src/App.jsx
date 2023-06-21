@@ -1,46 +1,80 @@
 import React from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import PostCard from "./components/Cards/PostCard.jsx";
+import PostForm from "./components/Forms/PostForm.jsx";
 
 class App extends React.Component {
     constructor() {
         super();
         this.state = {
-            name: 'Stepan',
-            age: 25,
-            isTextOpen: false,
+            posts: [],
+            isModalOpen: false,
+            postToEditId: ''
         }
     }
 
-     changeUser = () => {
-        this.setState({name: 'Mykola', age: 30, isTextOpen: !this.state.isTextOpen})
+    fetchPosts = () => {
+        fetch('https://jsonplaceholder.typicode.com/posts/')
+            .then((response) => response.json())
+            .then((json) => this.setState({posts: json}));
     }
-    render(){
+
+    removePostFromArray = (id) => {
+        fetch('https://jsonplaceholder.typicode.com/posts/' + id, {
+            method: 'DELETE',
+        }).then(() => {
+            const postToDeleteIndex = this.state.posts.findIndex(post => post.id === id)
+            this.state.posts.splice(postToDeleteIndex, 1)
+            this.setState({posts: this.state.posts})
+        });
+    }
+
+    toggleEditModal(id) {
+        this.setState({isModalOpen: true});
+        this.setState(() => {
+            return {
+                postToEditId: this.state.posts.findIndex(item => item.id === id)
+            }
+        });
+    }
+
+    editPost = (data) => {
+        fetch('https://jsonplaceholder.typicode.com/posts/' + data.id, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then((response) => response.json())
+            .then(() => {
+                this.setState((prevState) => prevState.posts[prevState.postToEditId] = data)
+                this.setState({isModalOpen: false, postToEditId: ''})
+            });
+
+    }
+
+    componentDidMount() {
+        this.fetchPosts()
+    }
+
+    render() {
         return (
             <>
-                <div>
-                    <a href="https://vitejs.dev" target="_blank">
-                        <img src={viteLogo} className="logo" alt="Vite logo" />
-                    </a>
-                    <a href="https://react.dev" target="_blank">
-                        <img src={reactLogo} className="logo react" alt="React logo" />
-                    </a>
-                </div>
-                <h1>Vite + React</h1>
-                <div className="card">
-                    <div >
-                        {this.state.isTextOpen
-                            ? <p>Name: {this.state.name}, age: {this.state.age}</p>
-                            : null
-                        }
-                        <button onClick={this.changeUser}>{this.state.isTextOpen ? 'Скрыть' : 'Показать'}</button>
-                    </div>
-                </div>
-                <p className="read-the-docs">
-                    Click on the Vite and React logos to learn more
-                </p>
+                <section className={'posts'}>
+                    {this.state.posts?.length
+                        ? this.state.posts.map(post => <PostCard key={post.id} postInfo={post}
+                                                                 onRemoveItem={() => this.removePostFromArray(post.id)}
+                                                                 onEditItemStarted={() => this.toggleEditModal(post.id)}/>)
+                        : 'There is no posts yet'
+                    }
+                </section>
+
+                {this.state.isModalOpen ?
+                    <PostForm postInfo={this.state.posts[this.state.postToEditId]} onEditingFinished={(data) => {
+                        this.editPost(data)
+                    }}/> : null}
             </>
+
         )
     }
 
