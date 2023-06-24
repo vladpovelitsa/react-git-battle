@@ -8,11 +8,11 @@ class PostForm extends React.Component {
             title:"",
             body:"",
             userId:"",
+
         }
     }
 
     titleChangeHandler = (event) => {
-        console.log(1)
         this.setState({title: event.target.value})
     }
     bodyChangeHandler = (event) => {

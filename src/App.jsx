@@ -1,14 +1,18 @@
 import React from 'react'
 import PostCard from "./components/Cards/PostCard.jsx";
 import PostForm from "./components/Forms/PostForm.jsx";
+import LoginForm from "./components/Forms/LoginForm.jsx";
 
 class App extends React.Component {
     constructor() {
         super();
         this.state = {
             posts: [],
-            isModalOpen: false,
-            postToEditId: ''
+            isEditModalOpen: false,
+            postToEditId: '',
+
+            isLoginModalOpen: false,
+            user: null,
         }
     }
 
@@ -29,7 +33,7 @@ class App extends React.Component {
     }
 
     toggleEditModal(id) {
-        this.setState({isModalOpen: true});
+        this.setState({isEditModalOpen: true});
         this.setState(() => {
             return {
                 postToEditId: this.state.posts.findIndex(item => item.id === id)
@@ -48,8 +52,19 @@ class App extends React.Component {
             .then((response) => response.json())
             .then(() => {
                 this.setState((prevState) => prevState.posts[prevState.postToEditId] = data)
-                this.setState({isModalOpen: false, postToEditId: ''})
+                this.setState({isEditModalOpen: false, postToEditId: ''})
             });
+    }
+
+    loginUser(userData) {
+        this.setState({isLoginModalOpen: false, user: userData})
+    }
+
+    showUserNameOrLoginBtn() {
+        return !this.state.user
+            ? <button className={'--ok'} onClick={() => this.setState({isLoginModalOpen: true})}>Log in </button>
+            : this.state.user?.name
+
 
     }
 
@@ -57,9 +72,13 @@ class App extends React.Component {
         this.fetchPosts()
     }
 
+
     render() {
         return (
             <>
+                <header className={'header'}>
+                    {this.showUserNameOrLoginBtn()}
+                </header>
                 <section className={'posts'}>
                     {this.state.posts?.length
                         ? this.state.posts.map(post => <PostCard key={post.id} postInfo={post}
@@ -69,10 +88,15 @@ class App extends React.Component {
                     }
                 </section>
 
-                {this.state.isModalOpen ?
+                {this.state.isEditModalOpen ?
                     <PostForm postInfo={this.state.posts[this.state.postToEditId]} onEditingFinished={(data) => {
                         this.editPost(data)
                     }}/> : null}
+                {this.state.isLoginModalOpen ?
+                    <LoginForm
+                        onLoginUser={(data) => {
+                            this.loginUser(data)
+                        }}/> : null}
             </>
 
         )

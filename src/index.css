@@ -100,6 +100,10 @@ button.--danger {
   margin-top: auto;
 }
 
+.--error {
+  border-color: red;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -125,5 +129,18 @@ button.--danger {
   align-items: center;
   justify-content: center;
   background-color: rgba(0,0,0, 0.6);
+  backdrop-filter: blur(3px);
 
+}
+
+.modal form {
+  max-width: 450px;
+  background: #1a1a1a;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px 50px;
 }
