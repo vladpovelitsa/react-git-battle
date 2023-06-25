@@ -13,7 +13,6 @@ const Popular = () => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
     const onSetSelectedLanguageHandler = (e) => {
-        // TODO: викликати зміну тільки після завантаження
         setSearchParams({lang: e})
     }
     useEffect(() => {

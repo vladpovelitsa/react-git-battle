@@ -1,5 +1,4 @@
 const LangTabs = ({langs, selectedLang, onSetSelectedLanguage}) => {
-        console.log(selectedLang)
     return (
         <ul className='languages'>
             {langs.map((language,index) => (
