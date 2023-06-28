@@ -2,13 +2,12 @@ import React from "react";
 import {
     createBrowserRouter,
     RouterProvider,
-    Route,
-    Link,
 } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import Popular from "./pages/Popular.jsx";
 import Battle from "./pages/Battle.jsx";
 import Nav from "./components/Common/Nav.jsx";
+import Results from "./pages/Results.jsx";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +25,10 @@ const router = createBrowserRouter([
             {
                 path: "battle",
                 element: <Battle />,
+            },
+            {
+                path: "battle/results",
+                element: <Results />,
             },
             {
                 path: '*',

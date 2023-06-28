@@ -5,5 +5,12 @@ export const fetchPopularRepos = (language) => {
        .catch(error => {
            throw new Error(error)
        })
+}
 
+export const fetchPlayerInfo = (username) => {
+    return axios.get('https://api.github.com/users/' + username)
+        .then((response) => response.data)
+        .catch(error => {
+            throw new Error(error)
+        })
 }
